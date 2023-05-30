@@ -186,6 +186,7 @@ static void task1(void* param)
 	while(1)
 	{
 		printf("%s\n",(char*)param);
+		taskYIELD();
 	}
 }
 static void task2(void* param)
@@ -193,6 +194,7 @@ static void task2(void* param)
 	while(1)
 	{
 		printf("%s\n",(char*)param);
+		taskYIELD();
 	}
 }
 
