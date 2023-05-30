@@ -28,6 +28,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/FreeRTOS.h \
  /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/FreeRTOSConfig.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER_SYSVIEW.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/Global.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER_SYSVIEW_ConfDefaults.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/SEGGER_SYSVIEW_Conf.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/SEGGER_RTT_Conf.h \
  /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/projdefs.h \
  /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/portable.h \
  /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/deprecated_definitions.h \
@@ -65,6 +72,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/FreeRTOS.h:
 /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/FreeRTOSConfig.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER_SYSVIEW.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/Global.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/SEGGER/SEGGER_SYSVIEW_ConfDefaults.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/SEGGER_SYSVIEW_Conf.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/SEGGER/Config/SEGGER_RTT_Conf.h:
 /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/projdefs.h:
 /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/portable.h:
 /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/deprecated_definitions.h:

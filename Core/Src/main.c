@@ -43,7 +43,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+#define DWT_CTRL (*(volatile uint32_t*)0XE0001000)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,6 +89,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  DWT_CTRL|=(1<<0);
+
+  SEGGER_SYSVIEW_Conf();
+  SEGGER_SYSVIEW_Start();
+
+
   status=xTaskCreate(task1, "task1", 100, "task=1", 2, &taskHandle1);
   configASSERT(status==pdPASS);
   status=xTaskCreate(task2, "task2", 100, "task=2", 2, &taskHandle2);
@@ -183,17 +189,23 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 static void task1(void* param)
 {
+	//char msg[100];
 	while(1)
 	{
 		printf("%s\n",(char*)param);
+		//snprintf(msg,100,"%s\n",(char*)param);
+		//SEGGER_SYSVIEW_PrintfTarget(msg);
 		taskYIELD();
 	}
 }
 static void task2(void* param)
 {
+	//char msg[100];
 	while(1)
 	{
 		printf("%s\n",(char*)param);
+		//snprintf(msg,100,"%s\n",(char*)param);
+		//SEGGER_SYSVIEW_PrintfTarget(msg);
 		taskYIELD();
 	}
 }
