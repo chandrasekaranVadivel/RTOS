@@ -23,7 +23,18 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/FreeRTOS.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/FreeRTOSConfig.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/projdefs.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/portable.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/deprecated_definitions.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/mpu_wrappers.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/task.h \
+ /home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/list.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -50,3 +61,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/FreeRTOS.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/FreeRTOSConfig.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/projdefs.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/portable.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/deprecated_definitions.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/mpu_wrappers.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/task.h:
+/home/indra/STM32CubeIDE/workspace_1.11.0/RTOS/ThirdParty/FreeRTOS/include/list.h:
