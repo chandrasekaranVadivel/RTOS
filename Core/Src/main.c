@@ -50,8 +50,9 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-static void task1(void*);
-static void task2(void*);
+static void LEDyellow(void *param);
+static void LEDred(void *param);
+static void LEDgreen(void *param);
 extern void SEGGER_UART_init(U32);
 /* USER CODE END PFP */
 
@@ -68,7 +69,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	BaseType_t status;
-	TaskHandle_t taskHandle1,taskHandle2;
+	TaskHandle_t taskLedGreen,taskLedRed,taskLedYellow;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -97,12 +98,13 @@ int main(void)
 
 //  SEGGER_SYSVIEW_Start();
 
-
-  status=xTaskCreate(task1, "task1", 100, "task=1", 2, &taskHandle1);
-  configASSERT(status==pdPASS);
-  status=xTaskCreate(task2, "task2", 100, "task=2", 2, &taskHandle2);
-  configASSERT(status==pdPASS);
-  vTaskStartScheduler();
+status =xTaskCreate(LEDgreen, "LEDgreen", 100, "LEDgreen", 2, &taskLedGreen);
+configASSERT(status==pdPASS);
+status =xTaskCreate(LEDred, "LEDred", 100, "LEDred", 2, &taskLedRed);
+configASSERT(status==pdPASS);
+status=xTaskCreate(LEDyellow, "LEDyellow", 100, "LEDyellow", 2, &taskLedYellow);
+configASSERT(status==pdPASS);
+vTaskStartScheduler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -180,7 +182,6 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
@@ -195,28 +196,31 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-static void task1(void* param)
+static void LEDgreen(void *param)
 {
-	char msg[100];
 	while(1)
 	{
-		//printf("%s\n",(char*)param);
-		//snprintf(msg,10,"%s\n",(char*)param);
-		sprintf(msg,"%s\n",(char*)param);
-		SEGGER_SYSVIEW_PrintfTarget(msg);
-		taskYIELD();
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+//		printf("%s\n",(char*)param);
+		vTaskDelay(1000);
 	}
 }
-static void task2(void* param)
+static void LEDred(void *param)
 {
-	char msg[100];
 	while(1)
 	{
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
 	//	printf("%s\n",(char*)param);
-		//snprintf(msg,10,"%s\n",(char*)param);
-		sprintf(msg,"%s\n",(char*)param);
-		SEGGER_SYSVIEW_PrintfTarget(msg);
-		taskYIELD();
+		vTaskDelay(800);
+	}
+}
+static void LEDyellow(void *param)
+{
+	while(1)
+	{
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+		//printf("%s\n",(char*)param);
+		vTaskDelay(400);
 	}
 }
 
