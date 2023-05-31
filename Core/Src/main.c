@@ -52,6 +52,7 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 static void task1(void*);
 static void task2(void*);
+extern void SEGGER_UART_init(U32);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,8 +92,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_CTRL|=(1<<0);
 
+  SEGGER_UART_init(500000);
   SEGGER_SYSVIEW_Conf();
-  SEGGER_SYSVIEW_Start();
+
+//  SEGGER_SYSVIEW_Start();
 
 
   status=xTaskCreate(task1, "task1", 100, "task=1", 2, &taskHandle1);
@@ -140,7 +143,12 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 84;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -150,12 +158,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -189,23 +197,25 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 static void task1(void* param)
 {
-	//char msg[100];
+	char msg[100];
 	while(1)
 	{
-		printf("%s\n",(char*)param);
-		//snprintf(msg,100,"%s\n",(char*)param);
-		//SEGGER_SYSVIEW_PrintfTarget(msg);
+		//printf("%s\n",(char*)param);
+		//snprintf(msg,10,"%s\n",(char*)param);
+		sprintf(msg,"%s\n",(char*)param);
+		SEGGER_SYSVIEW_PrintfTarget(msg);
 		taskYIELD();
 	}
 }
 static void task2(void* param)
 {
-	//char msg[100];
+	char msg[100];
 	while(1)
 	{
-		printf("%s\n",(char*)param);
-		//snprintf(msg,100,"%s\n",(char*)param);
-		//SEGGER_SYSVIEW_PrintfTarget(msg);
+	//	printf("%s\n",(char*)param);
+		//snprintf(msg,10,"%s\n",(char*)param);
+		sprintf(msg,"%s\n",(char*)param);
+		SEGGER_SYSVIEW_PrintfTarget(msg);
 		taskYIELD();
 	}
 }
