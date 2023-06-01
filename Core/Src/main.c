@@ -98,7 +98,7 @@ int main(void)
 
 //  SEGGER_SYSVIEW_Start();
 
-status =xTaskCreate(LEDgreen, "LEDgreen", 100, "LEDgreen", 2, &taskLedGreen);
+status =xTaskCreate(LEDgreen, "LEDgreen", 100, "LEDgreen", 0, &taskLedGreen);
 configASSERT(status==pdPASS);
 status =xTaskCreate(LEDred, "LEDred", 100, "LEDred", 2, &taskLedRed);
 configASSERT(status==pdPASS);
@@ -202,7 +202,8 @@ static void LEDgreen(void *param)
 	{
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 //		printf("%s\n",(char*)param);
-		vTaskDelay(1000);
+		int ticks=pdMS_TO_TICKS(100);
+		vTaskDelay(ticks);
 	}
 }
 static void LEDred(void *param)
