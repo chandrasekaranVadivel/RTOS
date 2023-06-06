@@ -43,6 +43,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+TaskHandle_t volatile next_task_handle = NULL;
+TaskHandle_t greenLEDHandle,redLEDHandle,blueLEDHandle,orangeLEDHandle,buttonHandle;
+BaseType_t status;
 
 /* USER CODE END PV */
 
@@ -50,8 +53,11 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-static void task1(void*);
-static void task2(void*);
+static void GreenLED(void *parm);
+static void RedLED(void *parm);
+static void blueLED(void *parm);
+static void OrangeLED(void *parm);
+static void buttonTask(void *param);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -66,8 +72,6 @@ static void task2(void*);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	BaseType_t status;
-	TaskHandle_t taskHandle1,taskHandle2;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -89,10 +93,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  status=xTaskCreate(task1, "task1", 100, "task=1", 2, &taskHandle1);
-  configASSERT(status==pdPASS);
-  status=xTaskCreate(task2, "task2", 100, "task=2", 2, &taskHandle2);
-  configASSERT(status==pdPASS);
+status=	xTaskCreate(GreenLED, "greenLED", 100	, NULL, 3, &greenLEDHandle);
+configASSERT(status==pdPASS);
+next_task_handle=greenLEDHandle;
+status=	xTaskCreate(RedLED, "redLED", 100	, NULL, 2, &redLEDHandle);
+configASSERT(status==pdPASS);
+status=	xTaskCreate(blueLED, "blueLED", 100	, NULL, 1, &blueLEDHandle);
+configASSERT(status==pdPASS);
+status=	xTaskCreate(OrangeLED, "orangeLED", 100	, NULL, 2, &orangeLEDHandle);
+configASSERT(status==pdPASS);
+status=	xTaskCreate(buttonTask, "buttonTask", 100	, NULL, 4, &buttonHandle);
+configASSERT(status==pdPASS);
+
   vTaskStartScheduler();
   /* USER CODE END 2 */
 
@@ -165,11 +177,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PD12 PD13 PD14 PD15 */
   GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
@@ -181,23 +199,99 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-static void task1(void* param)
+static void buttonTask(void *param)
 {
+	uint8_t btn_read=0;
+	uint8_t prevRead=0;
 	while(1)
 	{
-		printf("%s\n",(char*)param);
-		taskYIELD();
+		btn_read=HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+		if(btn_read)
+		{
+			if(!prevRead)
+			{
+				xTaskNotify(next_task_handle,0,eNoAction);
+			}
+		}
+		prevRead=btn_read;
+		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 }
-static void task2(void* param)
+static void GreenLED(void *parm)
 {
+	BaseType_t status;
 	while(1)
 	{
-		printf("%s\n",(char*)param);
-		taskYIELD();
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(800));
+		if(status==pdTRUE)
+		{
+			vTaskSuspendAll();
+			next_task_handle=orangeLEDHandle;
+			xTaskResumeAll();
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			vTaskDelete(NULL);
+		}
+//		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
+static void RedLED(void *parm)
+{
+	BaseType_t status;
+	while(1)
+	{
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(400));
+		if(status==pdTRUE)
+		{
+			vTaskSuspendAll();
+			next_task_handle=blueLEDHandle;
+			xTaskResumeAll();
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+			vTaskDelete(NULL);
+		}
 
+	}
+	//vTaskDelay(pdMS_TO_TICKS(500));
+}
+static void blueLED(void *parm)
+{
+	BaseType_t status;
+	while(1)
+	{
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(500));
+		if(status==pdTRUE)
+		{
+			vTaskSuspendAll();
+			next_task_handle=NULL;
+			xTaskResumeAll();
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+			vTaskDelete(buttonHandle);
+			vTaskDelete(NULL);
+		}
+
+	}
+//	vTaskDelay(pdMS_TO_TICKS(400));
+}
+static void OrangeLED(void *parm)
+{
+	BaseType_t status;
+	while(1)
+	{
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(800));
+		if(status==pdTRUE)
+		{
+			vTaskSuspendAll();
+			next_task_handle=redLEDHandle;
+			xTaskResumeAll();
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+			vTaskDelete(NULL);
+		}
+	//	vTaskDelay(pdMS_TO_TICKS(500));
+	}
+}
 /* USER CODE END 4 */
 
 /**
