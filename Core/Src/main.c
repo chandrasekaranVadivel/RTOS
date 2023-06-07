@@ -57,7 +57,7 @@ static void GreenLED(void *parm);
 static void RedLED(void *parm);
 static void blueLED(void *parm);
 static void OrangeLED(void *parm);
-static void buttonTask(void *param);
+void button_interrupt_handler(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -101,8 +101,6 @@ configASSERT(status==pdPASS);
 status=	xTaskCreate(blueLED, "blueLED", 100	, NULL, 1, &blueLEDHandle);
 configASSERT(status==pdPASS);
 status=	xTaskCreate(OrangeLED, "orangeLED", 100	, NULL, 2, &orangeLEDHandle);
-configASSERT(status==pdPASS);
-status=	xTaskCreate(buttonTask, "buttonTask", 100	, NULL, 4, &buttonHandle);
 configASSERT(status==pdPASS);
 
   vTaskStartScheduler();
@@ -185,7 +183,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PA0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -196,27 +194,22 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
-static void buttonTask(void *param)
+void button_interrupt_handler(void)
 {
-	uint8_t btn_read=0;
-	uint8_t prevRead=0;
-	while(1)
-	{
-		btn_read=HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
-		if(btn_read)
-		{
-			if(!prevRead)
-			{
-				xTaskNotify(next_task_handle,0,eNoAction);
-			}
-		}
-		prevRead=btn_read;
-		vTaskDelay(pdMS_TO_TICKS(10));
-	}
+	BaseType_t pxHigherPriorityTaskWoken;
+	pxHigherPriorityTaskWoken=pdFALSE;
+
+	xTaskNotifyFromISR(next_task_handle,0,eNoAction,&pxHigherPriorityTaskWoken);
+	portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
 }
+
 static void GreenLED(void *parm)
 {
 	BaseType_t status;
@@ -226,10 +219,10 @@ static void GreenLED(void *parm)
 		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(800));
 		if(status==pdTRUE)
 		{
-			vTaskSuspendAll();
+			portENTER_CRITICAL();
 			next_task_handle=orangeLEDHandle;
-			xTaskResumeAll();
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			portEXIT_CRITICAL();
 			vTaskDelete(NULL);
 		}
 //		vTaskDelay(pdMS_TO_TICKS(1000));
@@ -244,10 +237,10 @@ static void RedLED(void *parm)
 		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(400));
 		if(status==pdTRUE)
 		{
-			vTaskSuspendAll();
+			portENTER_CRITICAL();
 			next_task_handle=blueLEDHandle;
-			xTaskResumeAll();
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+			portEXIT_CRITICAL();
 			vTaskDelete(NULL);
 		}
 
@@ -263,10 +256,10 @@ static void blueLED(void *parm)
 		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(500));
 		if(status==pdTRUE)
 		{
-			vTaskSuspendAll();
+			portENTER_CRITICAL();
 			next_task_handle=NULL;
-			xTaskResumeAll();
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+			portEXIT_CRITICAL();
 			vTaskDelete(buttonHandle);
 			vTaskDelete(NULL);
 		}
@@ -283,10 +276,10 @@ static void OrangeLED(void *parm)
 		status= xTaskNotifyWait(0,0,NULL,pdMS_TO_TICKS(800));
 		if(status==pdTRUE)
 		{
-			vTaskSuspendAll();
+			portENTER_CRITICAL();
 			next_task_handle=redLEDHandle;
-			xTaskResumeAll();
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+			portEXIT_CRITICAL();
 			vTaskDelete(NULL);
 		}
 	//	vTaskDelay(pdMS_TO_TICKS(500));
